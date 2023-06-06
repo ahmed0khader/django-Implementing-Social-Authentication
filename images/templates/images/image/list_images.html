@@ -1,0 +1,23 @@
+{% load thumbnail %}
+
+<!-- يعرض القالب السابق قائمة الصور. ستستخدمه لإرجاع نتائج طلبات AJAX. -->
+<!-- في هذا الرمز ، تقوم بالتكرار فوق الصور وإنشاء صورة مصغرة مربعة لكل صورة. أنت تطبيع
+حجم الصور المصغرة إلى 300 × 300 بكسل -->
+
+{% for image in images %}
+    <div class="image">
+        <a href="{{ image.get_absolute_url }}">
+
+            {% thumbnail image.image 300x300 crop="smart" as im %}
+            <a href="{{ image.get_absolute_url }}">
+                <img src="{{ im.url }}">
+            </a>
+        </a>
+        <div class="info">
+            <a href="{{ image.get_absolute_url }}" class="title">
+                {{ image.title }}
+            </a>
+        </div>
+    </div>
+{% endfor %}
+    
