@@ -18,14 +18,10 @@ urlpatterns = [
     # path('ppassword-reset/complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     # 173 => 200
     path('', include('django.contrib.auth.urls')),
-    # تلك Django.contrib.auth.urls هي عناوين url نفسها. مما يعني أنه عند تضمينها ، فإنها تتضمن تلقائيًا بعض
-    # عناوين url المضمنة في django على سبيل المثال ، تسجيل الدخول ، التسجيل ، إعادة تعيين كلمة المرور ،
-    # تأكيد إعادة تعيين كلمة المرور ، إلخ. وجهات النظر الخاصة.
     path('', views.dashboard, name='dashboard'),
     path('register/', views.register, name='register'),
     path('edit/', views.edit, name='edit'),
     
-    # Chapter => 7 following Users
     path('users/', views.user_list, name='user_list'),
     path('user/<username>', views.user_detail, name='user_detail'),
     path('users/follow/', views.user_follow, name='user_follow'),
