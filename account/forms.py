@@ -16,14 +16,12 @@ class UserRegistrationForm(forms.ModelForm):
         model = User
         fields = ['username', 'first_name', 'email']
         
-    # التحقق من صحة كلمة المرور التانية من كلمة مرور الاولى 
     def clean_password2(self):
         cd = self.cleaned_data
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Passwords don\'t match.')
         return cd['password2']
 
-    # منع المستخدمين من استخدام بريد إلكتروني موجود
     def clean_email(self):
         data = self.cleaned_data['email']
         if User.objects.filter(email=data).exists():
@@ -36,7 +34,6 @@ class UserEditForm(forms.ModelForm):
         model = User
         fields = ['first_name', 'last_name', 'email']
     
-    # منع المستخدمين من استخدام بريد إلكتروني موجود
     def clean_email(self):
         data = self.cleaned_data['email']
         qs = User.objects.exclude(id=self.instance.id).filter(email=data)
