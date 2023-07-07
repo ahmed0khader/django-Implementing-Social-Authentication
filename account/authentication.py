@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from account.models import Profile
 
-# Building a custom authentication backend 221 => 194 تسجيل الدخول بواسطة الاميل و اليوزرنيم
 class EmailAuthBackend:
     """
     Authenticate using an e-mail address.
@@ -22,8 +21,6 @@ class EmailAuthBackend:
             return None
 
 
-# social Django
-# في وظيفة create_profile ، نتحقق من وجود كائن مستخدم ونستخدم
 def create_profile(backend, user, *args, **kwargs):
     """
     Create user profile for social authentication
