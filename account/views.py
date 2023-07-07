@@ -3,7 +3,6 @@ from django.http import HttpResponse #DONE
 from django.contrib.auth import authenticate, login, logout #DONE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-# الاستدعائات من باقي الملفات
 from .forms import *
 from .models import *
 
@@ -44,15 +43,10 @@ def register(request):
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
-            # قم بإنشاء كائن مستخدم جديد ولكن تجنب حفظه حتى الآن
             new_user = user_form.save(commit=False)
-            # تعيين كلمة المرور المختارة تستخدم لحفظ كلمة المرور بطريقة خوارزمية التجزئة
             new_user.set_password(user_form.cleaned_data['password'])
-            # حفظ كائن المستخدم
             new_user.save()
-            # إنشاء ملف تعريف المستخدم
             Profile.objects.create(user=new_user)
-            # app actions => utils.py
             create_action(new_user, 'has created an account')
             return render(request, 'account/register_done.html', {'new_user': new_user,})
     else:
@@ -66,14 +60,10 @@ def register(request):
 
 @login_required
 def dashboard(request):
-    # app actions => utils.py 308 => 334
-    # عرض جميع الإجراءات بشكل افتراضي
     actions = Action.objects.exclude(user=request.user)
     following_ids = request.user.following.values_list('id', flat=True)
     if following_ids:
-        # إذا كان المستخدم يتابع الآخرين ، فاسترجع أفعالهم فقط
         actions = actions.filter(user_id__in=following_ids)
-        # يوفر ORM  كائن بسيط لاسترداد العناصر ذات الصلة في نفس الوقت select_related 
         actions = actions.select_related('user', 'user__profile').prefetch_related('target')[:10] # select_related => العناصر ذات الصلة
     context = {
         'section': 'dashboard',
@@ -104,7 +94,6 @@ def edit(request):
         }
     return render(request, 'account/edit.html', context)
 
-# list following => chapter 7
 @login_required
 def user_list(request):
     users = User.objects.filter(is_active=True)
@@ -126,7 +115,6 @@ def user_detail(request, username):
     return render(request, 'account/user/detail.html', context)
 
 
-# Follow UnFollow 296 => 323
 @require_POST
 @login_required
 def user_follow(request):
@@ -136,11 +124,10 @@ def user_follow(request):
         try:
             user = User.objects.get(id=user_id)
             if action == 'follow':
-                Contact.objects.get_or_create( #get_or_create الحصول أو إنشاء 
+                Contact.objects.get_or_create( 
                     user_from=request.user,
                     user_to=user
                     )
-                # app actions => utils.py
                 create_action(request.user, 'is following', user)
             else:
                 Contact.objects.filter(
